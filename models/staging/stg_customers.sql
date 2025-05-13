@@ -1,8 +1,24 @@
 -- models/staging/stg_customers.sql
-{{ config(materialized='table') }}
+with
 
-SELECT
-    id AS customer_id,
-    first_name,
-    last_name
-FROM raw.customers
+source as (
+
+    select * from {{ source('jaffle_shop', 'raw_customers') }}
+
+),
+
+renamed as (
+
+    select
+
+        ----------  ids
+        id as customer_id,
+
+        ---------- text
+        name as customer_name
+
+    from source
+
+)
+
+select * from renamed
